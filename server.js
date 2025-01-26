@@ -49,4 +49,7 @@ app.post('/api/spin', (req, res) => {
     });
 });
 
-
+// Маршрут для корневого URL
+app.get('/', (req, res) => {
+    res.send('Hello, Git!');
+});
