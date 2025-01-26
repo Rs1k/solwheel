@@ -1,19 +1,19 @@
-// Подключаем зависимости
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// Создаём приложение Express
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Настраиваем middleware
+// Middleware для обработки JSON
 app.use(bodyParser.json());
-app.use(cors());
 
-// Храним данные в памяти (для простоты)
+// Добавляем CORS, чтобы разрешить запросы с любых источников
+app.use(cors()); // Разрешает запросы с любого домена
+
+// Данные сервера (пример)
 let totalSpins = 0;
-let lastResults = []; // Хранит последние 10 результатов
+let lastResults = [];
 
 // Маршрут для получения данных
 app.get('/api/data', (req, res) => {
@@ -31,19 +31,17 @@ app.post('/api/spin', (req, res) => {
         return res.status(400).json({ error: 'Invalid result' });
     }
 
-    // Увеличиваем количество спинов
     totalSpins++;
-
-    // Добавляем результат
     lastResults.push(result);
+
     if (lastResults.length > 10) {
-        lastResults.shift(); // Удаляем старейший элемент, чтобы хранить только 10
+        lastResults.shift();
     }
 
     res.json({ success: true });
 });
 
-// Запускаем сервер
+// Запуск сервера
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
