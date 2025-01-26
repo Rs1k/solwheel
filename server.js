@@ -51,3 +51,10 @@ app.post('/api/spin', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+// Обработка GET-запроса для /api/spin
+app.get('/api/spin', (req, res) => {
+    res.status(405).json({
+        error: 'This endpoint only supports POST requests.'
+    });
+});
