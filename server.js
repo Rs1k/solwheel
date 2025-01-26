@@ -8,16 +8,15 @@ let lastResults = [];
 // Настраиваем порт (Render передаёт его через process.env.PORT)
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-
 // Позволяет обрабатывать JSON в запросах
 app.use(express.json());
 
-// **GET /api/data**
-// Возвращает текущее количество спинов и последние результаты
+// Маршрут для корневого URL
+app.get('/', (req, res) => {
+    res.send('Hello, Git!');
+});
+
+// Маршрут для получения данных
 app.get('/api/data', (req, res) => {
     res.json({
         totalSpins,
@@ -25,8 +24,7 @@ app.get('/api/data', (req, res) => {
     });
 });
 
-// **POST /api/spin**
-// Обновляет статистику спинов
+// Маршрут для обработки спинов
 app.post('/api/spin', (req, res) => {
     const { result } = req.body;
 
@@ -49,7 +47,7 @@ app.post('/api/spin', (req, res) => {
     });
 });
 
-// Маршрут для корневого URL
-app.get('/', (req, res) => {
-    res.send('Hello, Git!');
+// Запускаем сервер и слушаем порт, предоставленный Render
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
