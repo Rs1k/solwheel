@@ -1,60 +1,49 @@
+// Подключаем зависимости
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+// Создаём приложение Express
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Для хранения данных
+// Настраиваем middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// Храним данные в памяти (для простоты)
 let totalSpins = 0;
-let lastResults = [];
-
-// Настраиваем порт (Render передаёт его через process.env.PORT)
-const PORT = process.env.PORT || 5000;
-
-// Позволяет обрабатывать JSON в запросах
-app.use(express.json());
-
-// Маршрут для корневого URL
-app.get('/', (req, res) => {
-    res.send('Hello, Git!');
-});
+let lastResults = []; // Хранит последние 10 результатов
 
 // Маршрут для получения данных
 app.get('/api/data', (req, res) => {
     res.json({
         totalSpins,
-        lastResults
+        lastResults,
     });
 });
 
-// Маршрут для обработки спинов
+// Маршрут для отправки нового результата
 app.post('/api/spin', (req, res) => {
     const { result } = req.body;
 
-    if (!result) {
-        return res.status(400).json({ error: 'Result is required' });
+    if (!result || (result !== 'Green' && result !== 'Red')) {
+        return res.status(400).json({ error: 'Invalid result' });
     }
 
+    // Увеличиваем количество спинов
     totalSpins++;
-    lastResults.push(result);
 
-    // Храним только последние 10 результатов
+    // Добавляем результат
+    lastResults.push(result);
     if (lastResults.length > 10) {
-        lastResults.shift();
+        lastResults.shift(); // Удаляем старейший элемент, чтобы хранить только 10
     }
 
-    res.json({
-        message: 'Spin recorded successfully',
-        totalSpins,
-        lastResults
-    });
+    res.json({ success: true });
 });
 
-// Запускаем сервер и слушаем порт, предоставленный Render
+// Запускаем сервер
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-// Обработка GET-запроса для /api/spin
-app.get('/api/spin', (req, res) => {
-    res.status(405).json({
-        error: 'This endpoint only supports POST requests.'
-    });
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
