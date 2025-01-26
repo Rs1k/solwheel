@@ -1,47 +1,21 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware для обработки JSON
-app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json());
 
-// Добавляем CORS, чтобы разрешить запросы с любых источников
-app.use(cors()); // Разрешает запросы с любого домена
-
-// Данные сервера (пример)
-let totalSpins = 0;
-let lastResults = [];
-
-// Маршрут для получения данных
-app.get('/api/data', (req, res) => {
-    res.json({
-        totalSpins,
-        lastResults,
-    });
+// Тестовые маршруты
+app.get('/test', (req, res) => {
+    res.json({ message: 'GET маршрут работает!' });
 });
 
-// Маршрут для отправки нового результата
-app.post('/api/spin', (req, res) => {
-    const { result } = req.body;
-
-    if (!result || (result !== 'Green' && result !== 'Red')) {
-        return res.status(400).json({ error: 'Invalid result' });
-    }
-
-    totalSpins++;
-    lastResults.push(result);
-
-    if (lastResults.length > 10) {
-        lastResults.shift();
-    }
-
-    res.json({ success: true });
+app.post('/test', (req, res) => {
+    res.json({ message: 'POST маршрут работает!', body: req.body });
 });
 
-// Запуск сервера
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Test server is running on port ${PORT}`);
 });
