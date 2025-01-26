@@ -7,6 +7,10 @@ let lastResults = [];
 
 // Настраиваем порт (Render передаёт его через process.env.PORT)
 const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 
 // Позволяет обрабатывать JSON в запросах
 app.use(express.json());
@@ -44,7 +48,4 @@ app.post('/api/spin', (req, res) => {
     });
 });
 
-// Запускаем сервер и слушаем порт, предоставленный Render
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+
